@@ -1,4 +1,4 @@
-package com.caju.card.authorization.domain;
+package com.caju.card.authorization.transaction.domain;
 
 public enum TransactionStatus {
 
