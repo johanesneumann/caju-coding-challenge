@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -21,9 +22,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class AuthorizeTransactionUseCaseTests {
 
-    private final Account account = new Account("123", new BigDecimal(100), new BigDecimal(200), new BigDecimal(300));
+    private final Account account = new Account(1L, "123", new BigDecimal(100), new BigDecimal(200), new BigDecimal(300));
 
     @MockBean
     private AccountRepository accountRepository;

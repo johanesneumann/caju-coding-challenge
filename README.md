@@ -52,7 +52,7 @@
 - [x] Implementação dos serviços de aplicação
 - [x] Implementação dos testes de unidade
 - [ ] Implementar a substituicao do mcc pelo nome do merchant
-- [ ] Adicionar suporte a persistencia com banco de dados
+- [x] Adicionar suporte a persistencia com banco de dados
 - [ ] Criação dos controladores REST
 - [ ] Criação dos testes de integração
 - [ ] Refatorar a solucao incluindo eventos de domínio para garantir aderencia a DDD

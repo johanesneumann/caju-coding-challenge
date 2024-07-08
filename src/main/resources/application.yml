@@ -1,0 +1,27 @@
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+
+
+spring:
+  main:
+    banner-mode: "off"
+  application:
+    name: Card Transaction Authorization
+  profiles:
+    active: default
+  datasource:
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/card-transaction-authorization}
+    username: ${DATASOURCE_USER:postgres}
+    password: ${DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+      show-sql: true
+    properties:
+      hibernate:
+        dialect=org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+

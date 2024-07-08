@@ -1,13 +1,22 @@
 package com.caju.card.authorization.account.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Generated;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.UUID;
 
 @Getter
+@Entity()
+@Table(name = "accounts")
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class Account {
 
     private static final Map<BalanceCategory, DebitStrategy> debitStrategies;
@@ -20,15 +29,21 @@ public class Account {
         );
     }
 
-    private final UUID id;
-    private final String accountNumber;
+    @Id
+    @Generated
+    private Long id;
+    @Column(name = "account_number")
+    private String accountNumber;
+    @Column(name = "balance_food")
     private BigDecimal balanceFood;
+    @Column(name = "balance_meal")
     private BigDecimal balanceMeal;
+    @Column(name = "balance_cash")
     private BigDecimal balanceCash;
 
 
-    public Account(String accountNumber, BigDecimal balanceFood, BigDecimal balanceMeal, BigDecimal balanceCash) {
-        this.id = UUID.randomUUID();
+    public Account(Long id, String accountNumber, BigDecimal balanceFood, BigDecimal balanceMeal, BigDecimal balanceCash) {
+        this.id = id;
         this.accountNumber = accountNumber;
         this.balanceFood = balanceFood;
         this.balanceMeal = balanceMeal;
