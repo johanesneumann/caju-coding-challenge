@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class Transaction {
 
     @Id
+    @Column(name = "id")
     private UUID id;
     @Column(name = "account_number")
     private String accountId;
@@ -29,6 +31,9 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private TransactionStatus status;
+    @Column(name = "result_code")
+    @Enumerated(EnumType.STRING)
+    private ResultCode resultCode;
 
 
     public Transaction(String accountId, BigDecimal amount, String merchant, String mcc) {
@@ -39,31 +44,28 @@ public class Transaction {
         this.mcc = mcc;
         this.status = TransactionStatus.PENDING;
 
+        Assert.notNull(accountId, "Transaction account id cannot be null or empty");
+        Assert.notNull(merchant, "Transaction merchant cannot be null or empty");
+        Assert.isTrue(mcc.matches("^[0-9]{4}$"), "Transaction mcc must have 4 numeric digits");
+        Assert.notNull(amount, "Transaction amount cannot be null or negative");
+        Assert.isTrue(amount.compareTo(BigDecimal.ZERO) > 0, "Transaction amount cannot be null or negative");
 
-        if (accountId == null || accountId.isEmpty()) {
-            throw new IllegalArgumentException("Transaction account id cannot be null or empty");
-        }
-
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Transaction amount cannot be null or negative");
-        }
-
-        if (merchant == null || merchant.isEmpty()) {
-            throw new IllegalArgumentException("Transaction merchant cannot be null or empty");
-        }
-
-        if (mcc == null || mcc.isEmpty() || !mcc.matches("^[0-9]{4}$")) {
-            throw new IllegalArgumentException("Transaction mcc must have 4 numeric digits");
-        }
 
     }
 
     public void authorize() {
         this.status = TransactionStatus.AUTHORIZED;
+        this.resultCode = ResultCode.APPROVED;
     }
 
     public void deny() {
         this.status = TransactionStatus.DENIED;
+        this.resultCode = ResultCode.REJECTED;
+    }
+
+    public void insuficientFunds() {
+        this.status = TransactionStatus.DENIED;
+        this.resultCode = ResultCode.REJECTED_INSUFFICIENT_FUNDS;
     }
 
 

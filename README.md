@@ -53,13 +53,22 @@
 - [x] Implementação dos testes de unidade
 - [ ] Implementar a substituicao do mcc pelo nome do merchant
 - [x] Adicionar suporte a persistencia com banco de dados
-- [ ] Criação dos controladores REST
+- [x] Criação dos controladores REST
 - [ ] Criação dos testes de integração
+- [ ] Criar teste para o UseCase de criacao de conta
 - [ ] Refatorar a solucao incluindo eventos de domínio para garantir aderencia a DDD
 - [ ] Detalhar a solução de arquitetura da regra L4 e avaliar as etapas para uma implementação simplificada
 - [ ] Adicionar Swagger
 
-## Fluxo de eventos
+## L4 e outras oportunidades de melhoria
+
+A
+É possível refatorar esta solucao para adicionar eventos de dominio para garantir a aderencia a DDD. O fluxo de eventos
+para a autorização da transaçaõ seria:
+Em uma implementação simples é possível usar ApplicationEventPublisher e um componente com @EventListener do próprio
+spring.
+Em uma implementação mais robusta é possível usar um message broker com Kafka, particionando a fila pelo id da conta
+para garantir a ordem de processamento em caso de concorrencia.
 
 1. Receber a transação via HTTP.
 2. Use case em Transacion processa a transacao (ProcessTransactionUseCase)
@@ -70,7 +79,7 @@
    3.2 Persiste a conta e emite o evento de transacao processada com sucesso|falha
 4. DomainEventListener de transaction trata o evento de transacao processada
    4.1 Atualiza a transacao com o status da transacao
-
+5. Retorna o resultado do processamento
 
 
 

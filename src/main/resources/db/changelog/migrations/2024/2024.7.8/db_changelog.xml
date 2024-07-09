@@ -26,22 +26,34 @@
 
     <changeSet id="2024.7.8-create-transactions-table-01" author="johanes.neumann">
         <createTable tableName="transactions">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="uuid">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="account_number" type="VARCHAR(10)">
                 <constraints nullable="false" foreignKeyName="transactions_fk_accounts_id"
                              references="accounts(account_number)"/>
             </column>
-            <column name="transaction_date" type="DATE">
-                <constraints nullable="false"/>
-            </column>
             <column name="amount" type="DECIMAL(19,2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="type" type="VARCHAR(255)">
+            <column name="merchant_name" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mcc_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(30)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <rollback/>
     </changeSet>
+
+    <changeSet id="2024.7.8-add-result-code-to-transactions-table-01" author="johanes.neumann">
+        <addColumn tableName="transactions">
+            <column name="result_code" type="VARCHAR(30)"/>
+        </addColumn>
+        <rollback/>
+    </changeSet>
+    
 </databaseChangeLog>
