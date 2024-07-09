@@ -2,6 +2,7 @@ package com.caju.card.authorization.transaction.application;
 
 import com.caju.card.authorization.account.domain.Account;
 import com.caju.card.authorization.account.domain.AccountRepository;
+import com.caju.card.authorization.merchant.domain.MerchantRepository;
 import com.caju.card.authorization.transaction.domain.ResultCode;
 import com.caju.card.authorization.transaction.domain.Transaction;
 import com.caju.card.authorization.transaction.domain.TransactionRepository;
@@ -28,6 +29,8 @@ public class AuthorizeTransactionUseCaseTests {
     private final Account account = new Account("123", new BigDecimal(100), new BigDecimal(200), new BigDecimal(300));
 
     @MockBean
+    private MerchantRepository merchantRepository;
+    @MockBean
     private AccountRepository accountRepository;
     @MockBean
     private TransactionRepository transactionRepository;
@@ -36,6 +39,7 @@ public class AuthorizeTransactionUseCaseTests {
 
     @BeforeEach
     public void setUp() {
+        when(merchantRepository.findByTransactionName("BORRACHARIA DO ZE               SAO PAULO BR")).thenReturn(Optional.empty());
         when(accountRepository.findByAccountNumber("123")).thenReturn(Optional.of(account));
     }
 

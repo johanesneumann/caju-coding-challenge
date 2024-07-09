@@ -55,5 +55,48 @@
         </addColumn>
         <rollback/>
     </changeSet>
-    
+
+    <changeSet id="2024.7.9-create-merchants-table-01" author="johanes.neumann">
+        <createTable tableName="merchants">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(200)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="location" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_name" type="VARCHAR(400)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mcc_code" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback/>
+    </changeSet>
+
+    <!--  Merchant borracharia = new Merchant(1L, "BORRACHARIA DO ZE", "SAO PAULO BR", "BORRACHARIA DO ZE               SAO PAULO BR", "9999");
+        Merchant uber = new Merchant(2L, "UBER", "SAO PAULO BR", "UBER TRIP SAO PAULO BR", "9999");
+        Merchant uberEats = new Merchant(3L, "UBER EATS", "SAO PAULO BR", "UBER EATS SAO PAULO BR", "5812");
+        Merchant picpay = new Merchant(4L, "PICPAY", "GOIANIA BR", "PICPAY*BILHETEUNICO GOIANIA BR", "9999");
+        -->
+
+    <changeSet id="2024.7.9-insert-merchants-01" author="johanes.neumann">
+        <sql>
+            INSERT INTO merchants (name, location, transaction_name, mcc_code) VALUES ('BORRACHARIA DO ZE', 'SAO
+            PAULO BR', 'BORRACHARIADOZESAOPAULOBR', '9999');
+            INSERT INTO merchants (name, location, transaction_name, mcc_code) VALUES ('UBER', 'SAO PAULO BR',
+            'UBERTRIPSAOPAULOBR', '9999');
+            INSERT INTO merchants (name, location, transaction_name, mcc_code) VALUES ('UBER EATS', 'SAO PAULO
+            BR', 'UBEREATSSAOPAULOBR', '5812');
+            INSERT INTO merchants (name, location, transaction_name, mcc_code) VALUES ('PICPAY', 'GOIANIA BR',
+            'PICPAY*BILHETEUNICOGOIANIABR', '9999');
+        </sql>
+        <rollback>
+            DELETE FROM merchants;
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

@@ -18,10 +18,12 @@ public class AuthorizeTransactionUseCase {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private final Map<String, BalanceCategory> mccCategory;
+    private final CorrectTransactionMCCUseCase correctTransactionMCCUseCase;
 
-    public AuthorizeTransactionUseCase(AccountRepository accountRepository, TransactionRepository transactionRepository) {
+    public AuthorizeTransactionUseCase(AccountRepository accountRepository, TransactionRepository transactionRepository, CorrectTransactionMCCUseCase correctTransactionMCCUseCase) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.correctTransactionMCCUseCase = correctTransactionMCCUseCase;
         this.mccCategory = new HashMap<>();
         this.mccCategory.put("5411", BalanceCategory.FOOD);
         this.mccCategory.put("5412", BalanceCategory.FOOD);
@@ -34,10 +36,10 @@ public class AuthorizeTransactionUseCase {
     public TransactionResult execute(AuthorizeTransactionPayload payload) {
         Transaction transaction = new Transaction(payload.account(), payload.totalAmount(), payload.merchant(), payload.mcc());
         try {
+            String mcc = correctTransactionMCCUseCase.execute(new CorrectTransactionMccPayload(transaction.getMcc(), transaction.getMerchant()));
+            transaction.setMcc(mcc);
 
             Account account = accountRepository.findByAccountNumber(transaction.getAccountId()).orElseThrow(() -> new IllegalArgumentException("Unprocessable transaction, account not found"));
-
-            String mcc = transaction.getMcc();
             BalanceCategory balanceCategory = Optional.ofNullable(mccCategory.get(mcc)).orElse(BalanceCategory.CASH);
 
             account.debit(transaction.getAmount(), balanceCategory);

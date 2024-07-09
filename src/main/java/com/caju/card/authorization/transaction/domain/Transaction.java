@@ -49,8 +49,10 @@ public class Transaction {
         Assert.isTrue(mcc.matches("^[0-9]{4}$"), "Transaction mcc must have 4 numeric digits");
         Assert.notNull(amount, "Transaction amount cannot be null or negative");
         Assert.isTrue(amount.compareTo(BigDecimal.ZERO) > 0, "Transaction amount cannot be null or negative");
+    }
 
-
+    public void setMcc(String mcc) {
+        this.mcc = mcc;
     }
 
     public void authorize() {

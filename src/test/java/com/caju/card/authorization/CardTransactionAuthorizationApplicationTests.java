@@ -1,6 +1,7 @@
 package com.caju.card.authorization;
 
 import com.caju.card.authorization.account.domain.AccountRepository;
+import com.caju.card.authorization.merchant.domain.MerchantRepository;
 import com.caju.card.authorization.transaction.domain.TransactionRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,8 @@ class CardTransactionAuthorizationApplicationTests {
     private AccountRepository accountRepository;
     @MockBean
     private TransactionRepository transactionRepository;
+    @MockBean
+    private MerchantRepository merchantRepository;
 
     @Test
     void contextLoads() {
