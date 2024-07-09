@@ -1,11 +1,8 @@
 package com.caju.card.authorization.account.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Generated;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
@@ -17,6 +14,7 @@ import java.util.Map;
 @Entity()
 @Table(name = "accounts")
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class Account {
 
     private static final Map<BalanceCategory, DebitStrategy> debitStrategies;
@@ -30,7 +28,8 @@ public class Account {
     }
 
     @Id
-    @Generated
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     @Column(name = "account_number")
     private String accountNumber;
@@ -42,30 +41,20 @@ public class Account {
     private BigDecimal balanceCash;
 
 
-    public Account(Long id, String accountNumber, BigDecimal balanceFood, BigDecimal balanceMeal, BigDecimal balanceCash) {
-        this.id = id;
+    public Account(String accountNumber, BigDecimal balanceFood, BigDecimal balanceMeal, BigDecimal balanceCash) {
         this.accountNumber = accountNumber;
         this.balanceFood = balanceFood;
         this.balanceMeal = balanceMeal;
         this.balanceCash = balanceCash;
 
+        Assert.notNull(accountNumber, "Account number cannot be null or empty");
+        Assert.notNull(balanceFood, "Balance food cannot be null or negative");
+        Assert.isTrue(balanceFood.compareTo(BigDecimal.ZERO) >= 0, "Balance food cannot be null or negative");
+        Assert.notNull(balanceMeal, "Balance meal cannot be null or negative");
+        Assert.isTrue(balanceMeal.compareTo(BigDecimal.ZERO) >= 0, "Balance meal cannot be null or negative");
+        Assert.notNull(balanceCash, "Balance cash cannot be null or negative");
+        Assert.isTrue(balanceCash.compareTo(BigDecimal.ZERO) >= 0, "Balance cash cannot be null or negative");
 
-        if (accountNumber == null || accountNumber.isEmpty()) {
-            throw new IllegalArgumentException("Account number cannot be null or empty");
-        }
-
-        //balanceFood cannot be null or negative
-        if (balanceFood == null || balanceFood.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Balance food cannot be null or negative");
-        }
-        //balanceMeal cannot be null or negative
-        if (balanceMeal == null || balanceMeal.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Balance meal cannot be null or negative");
-        }
-        //balanceCash cannot be null or negative
-        if (balanceCash == null || balanceCash.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Balance cash cannot be null or negative");
-        }
     }
 
     boolean canAcceptDebit(BigDecimal amount, BalanceCategory category) {

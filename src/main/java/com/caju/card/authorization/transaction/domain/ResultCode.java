@@ -1,4 +1,4 @@
-package com.caju.card.authorization.transaction.application;
+package com.caju.card.authorization.transaction.domain;
 
 public enum ResultCode {
 

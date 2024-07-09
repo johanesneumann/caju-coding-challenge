@@ -31,9 +31,10 @@ public class AuthorizeTransactionUseCase {
     }
 
 
-    public TransactionResult execute(Transaction transaction) {
-        TransactionResult result = new TransactionResult(ResultCode.REJECTED);
+    public TransactionResult execute(AuthorizeTransactionPayload payload) {
+        Transaction transaction = new Transaction(payload.account(), payload.totalAmount(), payload.merchant(), payload.mcc());
         try {
+
             Account account = accountRepository.findByAccountNumber(transaction.getAccountId()).orElseThrow(() -> new IllegalArgumentException("Unprocessable transaction, account not found"));
 
             String mcc = transaction.getMcc();
@@ -42,18 +43,16 @@ public class AuthorizeTransactionUseCase {
             account.debit(transaction.getAmount(), balanceCategory);
             transaction.authorize();
             accountRepository.save(account);
-            result = new TransactionResult(ResultCode.APPROVED);
 
-            return result;
+
         } catch (InsufficientFundsException e) {
-            transaction.deny();
-            result = new TransactionResult(ResultCode.REJECTED_INSUFFICIENT_FUNDS);
+            transaction.insuficientFunds();
         } catch (Exception e) {
             transaction.deny();
         } finally {
             transactionRepository.save(transaction);
         }
-        return result;
+        return new TransactionResult(transaction.getResultCode());
 
 
     }
