@@ -82,6 +82,8 @@ questão L4, mas achei relevante pontuar.
 
 Em uma implementação simples é possível usar ApplicationEventPublisher e um componente com @EventListener do próprio
 spring.
+Em uma implementação mais robusta é possível usar um message broker com Kafka, particionando a fila pelo id da conta
+para garantir a ordem de processamento em caso de concorrencia.
 
 O fluxo de eventos para a autorização da transação seria:
 
