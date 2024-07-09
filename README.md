@@ -19,11 +19,23 @@
 - Domain Driven Design (+-)
 - SOLID
 
-## Como rodar o projeto
+## Como executar o projeto
 
 - Clone o projeto
+- Execute o comando `docker-compose up` no diretório dev-env do projeto para iniciar o banco de dados postgres
 - Execute o comando `mvn clean install`
-- Execute a classe CardTransactionApplication
+- Execute a classe CardTransactionApplication, os migrations serão executados automaticamente
+- Acesse a documentação da API em http://localhost:8080/swagger-ui.html
+    - Use o endpoint `POST /transactions` para criar uma transação
+    - Use o endpoint `GET /transactions` para listar as transações
+- Caso prefira, há um arquivo `Caju-Card-Transaction.postman_collection.json` no
+  diretório `./dev-env/Caju-Card-Transaction.postman_collection.json`
+  com uma
+  coleção de requests para o Postman
+
+## L4
+
+A descrição de solucao, com diagramas e detalhes de implementação, está no arquivo [L4.md](docs/L4/L4.md)
 
 ## Refinamento das regras de negocio da autorização
 
@@ -41,8 +53,6 @@
    code": "51"}.
 9. Se ocorrer qualquer outro problema durante o processamento, rejeitar a transação por motivo de erro com resposta {"
    code": "07"}.
-10. Garantir que apenas uma transação por conta seja processada ao mesmo tempo utilizando locks ou outra estratégia de
-    sincronização.
 11. Retornar a resposta apropriada.
 12. O código de retorno HTTP deve ser sempre 200, independentemente do resultado do processamento da transação.
 
@@ -55,24 +65,27 @@
 - [ ] Implementar a substituicao do mcc pelo nome do merchant
 - [x] Adicionar suporte a persistencia com banco de dados
 - [x] Criação dos controladores REST
-- [ ] Criação dos testes de integração
+- [x] Criação dos testes de integração
 - [x] Criar teste para o UseCase de criacao de conta
-- [ ] Detalhar a solução de arquitetura da regra L4 e avaliar as etapas para uma implementação simplificada
+- [x] Detalhar a solução de arquitetura da regra L4 e avaliar as etapas para uma implementação simplificada
 - [x] Adicionar Swagger
 
 ## Oportunidades de melhoria
 
 Refatorações possíveis para melhorar a solução caso fosse um projeto real, com necessidade de escala e manutenção,
-visando manter a complexidade do código baixa e a redibilidade alta.
+visando manter a complexidade do código baixa e a redibilidade alta. Estes temas não estão diretamente relacionados a
+questão L4, mas achei relevante pontuar.
 
 ### 1. Uso de eventos
 
-É possível refatorar esta solucao para adicionar eventos de dominio para garantir a aderencia a DDD.
+É possível refatorar esta solucao para adicionar eventos de dominio, o que garantir a aderencia a DDD.
 
 Em uma implementação simples é possível usar ApplicationEventPublisher e um componente com @EventListener do próprio
 spring.
-Em uma implementação mais robusta é possível usar um message broker com Kafka, particionando a fila pelo id da conta
-para garantir a ordem de processamento em caso de concorrencia.
+
+Em uma implementação onde o resultado pudesse ser assíncrono (chamando um webhook com o retorno por exemplo), é possível
+usar um message broker com Kafka, particionando a fila pelo id da conta para garantir a ordem de processamento, isso
+também resolveria o problema de concorrencia.
 
 O fluxo de eventos para a autorização da transaçaõ seria:
 
@@ -89,15 +102,22 @@ O fluxo de eventos para a autorização da transaçaõ seria:
 
 ### 2.Utilização do Spring Modulith para garantir a separação de módulos
 
-Os dominios adjacentes a transação (Account, Merchant, proprio MCC) possuem regras de negocio suficientes para que cada
+Os dominios adjacentes à transação (Account, Merchant, proprio MCC) caso implementados completamente possuiriam regras
+de negocio suficientes para que cada
 um tenha seu proprio serviço.
 Porém, mesmo no escopo reduzido da autorização de uma transação, é possível separar os dominios em módulos diferentes.
 
 O Spring Modulith permitiria garantir a separação de módulos e a dependência unidirecional entre eles.
 É possível utilizar eventos por entidade agregadora e eliminar os gateways entre dominios.
-Também é possível organizar melhor os migrations.
+Também é possível organizar melhor os migrations, dividir melhor a execução de testes e otimizar o build.
 
-## L4
+### 3. Implementação de idempotencia com cache distribuído
+
+É importante que transacoes financeiras possuam idempotencia, ou seja, caso exatamente a mesma transação seja recebida
+mais de uma vez, a partir da segunda vez ela não é processada novamente, mas ainda conseguimos saber o resultado do
+primeiro processamento.
+Com redis seria possível implementar um cache com as transações mais recentes, tornando esta validação performatica nos
+cenarios mais comuns (por exmeplo, envio em duplicidade onde as duplicidades acontecem em sequencia).
 
 ## Referencias usadas para o desenvolvimento
 
@@ -107,5 +127,4 @@ Então pesquisei os conceitos mais importantes neste cenário e encontrei alguma
 
 - [Designing a payment system](https://newsletter.pragmaticengineer.com/p/designing-a-payment-system)
 - [ATM in concurrent environment](https://stackoverflow.com/questions/12236897/how-does-atm-work-in-concurrent-environment)
-- [Implementing Domain Driven Design with Spring by Maciej Walkowiak @ Spring I/O 2024
-  ](https://www.youtube.com/watch?v=VGhg6Tfxb60)
+- [Implementing Domain Driven Design with Spring by Maciej Walkowiak @ Spring I/O 2024](https://www.youtube.com/watch?v=VGhg6Tfxb60)
