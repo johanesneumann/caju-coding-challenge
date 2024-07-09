@@ -55,7 +55,7 @@
 - [x] Adicionar suporte a persistencia com banco de dados
 - [x] Criação dos controladores REST
 - [ ] Criação dos testes de integração
-- [ ] Criar teste para o UseCase de criacao de conta
+- [x] Criar teste para o UseCase de criacao de conta
 - [ ] Refatorar a solucao incluindo eventos de domínio para garantir aderencia a DDD
 - [ ] Detalhar a solução de arquitetura da regra L4 e avaliar as etapas para uma implementação simplificada
 - [ ] Adicionar Swagger
