@@ -56,20 +56,6 @@ A descrição de solucao, com diagramas e detalhes de implementação, está no 
 11. Retornar a resposta apropriada.
 12. O código de retorno HTTP deve ser sempre 200, independentemente do resultado do processamento da transação.
 
-## Etapas de desenvolvimento
-
-- [x] Implementação das entidades de domínio
-- [x] Criação dos repositórios
-- [x] Implementação dos serviços de aplicação
-- [x] Implementação dos testes de unidade
-- [ ] Implementar a substituicao do mcc pelo nome do merchant
-- [x] Adicionar suporte a persistencia com banco de dados
-- [x] Criação dos controladores REST
-- [x] Criação dos testes de integração
-- [x] Criar teste para o UseCase de criacao de conta
-- [x] Detalhar a solução de arquitetura da regra L4 e avaliar as etapas para uma implementação simplificada
-- [x] Adicionar Swagger
-
 ## Oportunidades de melhoria
 
 Refatorações possíveis para melhorar a solução caso fosse um projeto real, com necessidade de escala e manutenção,
@@ -82,8 +68,6 @@ questão L4, mas achei relevante pontuar.
 
 Em uma implementação simples é possível usar ApplicationEventPublisher e um componente com @EventListener do próprio
 spring.
-Em uma implementação mais robusta é possível usar um message broker com Kafka, particionando a fila pelo id da conta
-para garantir a ordem de processamento em caso de concorrencia.
 
 O fluxo de eventos para a autorização da transação seria:
 
