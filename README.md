@@ -11,11 +11,12 @@
 - Maven
 - Docker
 - Swagger
+- Postgres
 
 ## Padrões de arquitetura
 
 - Clean Architecture
-- Domain Driven Design
+- Domain Driven Design (+-)
 - SOLID
 
 ## Como rodar o projeto
@@ -56,13 +57,18 @@
 - [x] Criação dos controladores REST
 - [ ] Criação dos testes de integração
 - [x] Criar teste para o UseCase de criacao de conta
-- [ ] Refatorar a solucao incluindo eventos de domínio para garantir aderencia a DDD
 - [ ] Detalhar a solução de arquitetura da regra L4 e avaliar as etapas para uma implementação simplificada
-- [ ] Adicionar Swagger
+- [x] Adicionar Swagger
 
-## L4 e outras oportunidades de melhoria
+## Oportunidades de melhoria
+
+Refatorações possíveis para melhorar a solução caso fosse um projeto real, com necessidade de escala e manutenção,
+visando manter a complexidade do código baixa e a redibilidade alta.
+
+### 1. Uso de eventos
 
 É possível refatorar esta solucao para adicionar eventos de dominio para garantir a aderencia a DDD.
+
 Em uma implementação simples é possível usar ApplicationEventPublisher e um componente com @EventListener do próprio
 spring.
 Em uma implementação mais robusta é possível usar um message broker com Kafka, particionando a fila pelo id da conta
@@ -81,6 +87,18 @@ O fluxo de eventos para a autorização da transaçaõ seria:
    4.1 Atualiza a transacao com o status da transacao
 5. Retorna o resultado do processamento
 
+### 2.Utilização do Spring Modulith para garantir a separação de módulos
+
+Os dominios adjacentes a transação (Account, Merchant, proprio MCC) possuem regras de negocio suficientes para que cada
+um tenha seu proprio serviço.
+Porém, mesmo no escopo reduzido da autorização de uma transação, é possível separar os dominios em módulos diferentes.
+
+O Spring Modulith permitiria garantir a separação de módulos e a dependência unidirecional entre eles.
+É possível utilizar eventos por entidade agregadora e eliminar os gateways entre dominios.
+Também é possível organizar melhor os migrations.
+
+## L4
+
 ## Referencias usadas para o desenvolvimento
 
 Eu não possuo experiencia pratica com processamento de pagamentos, apesar de já ter integrado com APIs e implementado
@@ -89,4 +107,5 @@ Então pesquisei os conceitos mais importantes neste cenário e encontrei alguma
 
 - [Designing a payment system](https://newsletter.pragmaticengineer.com/p/designing-a-payment-system)
 - [ATM in concurrent environment](https://stackoverflow.com/questions/12236897/how-does-atm-work-in-concurrent-environment)
-
+- [Implementing Domain Driven Design with Spring by Maciej Walkowiak @ Spring I/O 2024
+  ](https://www.youtube.com/watch?v=VGhg6Tfxb60)
