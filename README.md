@@ -64,7 +64,7 @@ questão L4, mas achei relevante pontuar.
 
 ### 1. Uso de eventos
 
-É possível refatorar esta solucao para adicionar eventos de dominio, o que garantir a aderencia a DDD.
+É possível refatorar esta solucao para adicionar eventos de dominio, o que garantiria completamente a aderencia a DDD.
 
 Em uma implementação simples é possível usar ApplicationEventPublisher e um componente com @EventListener do próprio
 spring.
